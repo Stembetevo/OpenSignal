@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: sui-gas-station
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: NODE_ENV
+        value: production
+      - key: SUI_NETWORK
+        value: testnet
+      - key: TRUST_PROXY
+        value: true
+      - key: PORT
+        value: 10000
+      - key: SUI_RPC_URL
+        sync: false
+      - key: SPONSOR_PRIVATE_KEY
+        sync: false
+      - key: SPONSOR_ADDRESS
+        sync: false
+      - key: API_KEYS
+        sync: false
+      - key: ALLOWLIST
+        sync: false
+      - key: MAX_GAS_BUDGET
+        value: 20000000
+      - key: DAPP_DAILY_BUDGET_MIST
+        value: 500000000
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 60000
+      - key: RATE_LIMIT_MAX
+        value: 120
