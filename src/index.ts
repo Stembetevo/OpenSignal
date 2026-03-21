@@ -67,7 +67,7 @@ app.post("/v1/sponsor/sign", requireApiKey, dappRateLimit, async (req, res, next
   try {
     const payload = sponsorRequestSchema.parse(req.body);
     const result = await service.sponsor(payload, req.dappName as string);
-    res.json({ ok: true, sponsored: result });
+    res.json({ ok: true, ...result });
   } catch (error) {
     next(error);
   }
