@@ -1,4 +1,3 @@
-import { ApiKeyStatus } from "@prisma/client";
 import express from "express";
 
 import { ApiError } from "./errors.js";
@@ -341,7 +340,7 @@ portalRouter.post("/api-keys/:keyId/revoke", requirePortalAuth, async (req, res,
     const revoked = await prisma.apiKey.update({
       where: { id: apiKey.id },
       data: {
-        status: ApiKeyStatus.REVOKED,
+        status: "REVOKED",
         revokedAt: new Date(),
       },
       select: {

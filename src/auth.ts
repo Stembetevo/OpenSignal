@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { ApiKeyStatus } from "@prisma/client";
 
 import { config } from "./config.js";
 import { getPrismaClient } from "./db.js";
@@ -36,7 +35,7 @@ export async function requireApiKey(req: Request, _res: Response, next: NextFunc
       },
     });
 
-    if (!dbKey || dbKey.status !== ApiKeyStatus.ACTIVE) {
+    if (!dbKey || dbKey.status !== "ACTIVE") {
       return next(new ApiError(401, "UNAUTHORIZED", "Invalid API key"));
     }
 
