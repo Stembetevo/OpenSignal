@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from "express";
+import { ApiKeyStatus } from "@prisma/client";
 
 import { config } from "./config.js";
+import { getPrismaClient } from "./db.js";
 import { ApiError } from "./errors.js";
+import { hashApiKey } from "./portal-auth.js";
 
 declare global {
   namespace Express {
@@ -12,7 +15,7 @@ declare global {
   }
 }
 
-export function requireApiKey(req: Request, _res: Response, next: NextFunction) {
+export async function requireApiKey(req: Request, _res: Response, next: NextFunction) {
   const key = req.header("x-api-key")?.trim();
 
   if (!key) {
@@ -21,7 +24,29 @@ export function requireApiKey(req: Request, _res: Response, next: NextFunction) 
 
   const dappName = config.apiKeys.get(key);
   if (!dappName) {
-    return next(new ApiError(401, "UNAUTHORIZED", "Invalid API key"));
+    const prisma = getPrismaClient();
+    if (!prisma) {
+      return next(new ApiError(401, "UNAUTHORIZED", "Invalid API key"));
+    }
+
+    const dbKey = await prisma.apiKey.findUnique({
+      where: { keyHash: hashApiKey(key) },
+      include: {
+        dapp: true,
+      },
+    });
+
+    if (!dbKey || dbKey.status !== ApiKeyStatus.ACTIVE) {
+      return next(new ApiError(401, "UNAUTHORIZED", "Invalid API key"));
+    }
+
+    req.apiKey = key;
+    req.dappName = dbKey.dapp.name;
+    await prisma.apiKey.update({
+      where: { id: dbKey.id },
+      data: { lastUsedAt: new Date() },
+    });
+    return next();
   }
 
   req.apiKey = key;

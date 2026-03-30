@@ -18,6 +18,8 @@ services:
         value: true
       - key: PORT
         value: 10000
+      - key: FRONTEND_URL
+        sync: false
       - key: SUI_RPC_URL
         sync: false
       - key: SPONSOR_PRIVATE_KEY
@@ -25,6 +27,10 @@ services:
       - key: SPONSOR_ADDRESS
         sync: false
       - key: API_KEYS
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: PORTAL_JWT_SECRET
         sync: false
       - key: ALLOWLIST
         sync: false
