@@ -10,6 +10,8 @@ export const sponsorRequestSchema = z.object({
   transactionKind: z.string().min(8),
   sender: z.string().min(3),
   requestedCalls: z.array(moveCallDescriptorSchema).default([]),
+  purchaseAmountMist: z.number().int().positive().optional(),
+  recipient: z.string().min(3).max(128).optional(),
   maxGasBudget: z.number().int().positive().optional(),
   network: z.enum(["testnet", "mainnet"]).optional(),
   idempotencyKey: z.string().min(6).max(128).optional(),

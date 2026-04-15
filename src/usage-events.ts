@@ -5,6 +5,8 @@ interface SponsorshipEventInput {
   endpoint: string;
   status: "success" | "failed";
   gasBudget?: number;
+  purchaseAmountMist?: number;
+  recipient?: string;
   errorCode?: string;
   latencyMs?: number;
 }
@@ -26,6 +28,8 @@ export async function recordSponsorshipEvent(input: SponsorshipEventInput): Prom
       endpoint: input.endpoint,
       status: input.status,
       gasBudget: input.gasBudget,
+      purchaseAmountMist: input.purchaseAmountMist,
+      recipient: input.recipient,
       errorCode: input.errorCode,
       latencyMs: input.latencyMs,
     },

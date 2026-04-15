@@ -70,9 +70,18 @@ app.post("/v1/sponsor/quote", requireApiKey, dappRateLimit, async (req, res, nex
       endpoint: "/v1/sponsor/quote",
       status: "success",
       gasBudget: quote.gasBudget as number,
+      purchaseAmountMist: payload.purchaseAmountMist,
+      recipient: payload.recipient,
       latencyMs: Date.now() - startedAt,
     });
-    res.json({ ok: true, quote });
+    res.json({
+      ok: true,
+      quote: {
+        ...quote,
+        purchaseAmountMist: payload.purchaseAmountMist ?? null,
+        recipient: payload.recipient ?? null,
+      },
+    });
   } catch (error) {
     await recordSponsorshipEvent({
       dappName: req.dappName as string,
@@ -96,9 +105,18 @@ app.post("/v1/sponsor/sign", requireApiKey, dappRateLimit, async (req, res, next
       endpoint: "/v1/sponsor/sign",
       status: "success",
       gasBudget: gasData?.budget != null ? Number(gasData.budget) : undefined,
+      purchaseAmountMist: payload.purchaseAmountMist,
+      recipient: payload.recipient,
       latencyMs: Date.now() - startedAt,
     });
-    res.json({ ok: true, ...result });
+    res.json({
+      ok: true,
+      ...result,
+      transactionDetails: {
+        purchaseAmountMist: payload.purchaseAmountMist ?? null,
+        recipient: payload.recipient ?? null,
+      },
+    });
   } catch (error) {
     await recordSponsorshipEvent({
       dappName: req.dappName as string,

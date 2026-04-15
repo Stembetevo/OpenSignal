@@ -57,14 +57,16 @@ model ApiKey {
 }
 
 model SponsorshipEvent {
-  id         String   @id @default(cuid())
-  dappId     String
-  endpoint   String
-  status     String
-  errorCode  String?
-  gasBudget  Int?
-  latencyMs  Int?
-  createdAt  DateTime @default(now())
+  id                 String   @id @default(cuid())
+  dappId             String
+  endpoint           String
+  status             String
+  errorCode          String?
+  gasBudget          Int?
+  purchaseAmountMist Int?
+  recipient          String?
+  latencyMs          Int?
+  createdAt          DateTime @default(now())
 
   dapp Dapp @relation(fields: [dappId], references: [id], onDelete: Cascade)
 

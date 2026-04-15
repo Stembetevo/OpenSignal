@@ -420,6 +420,26 @@ portalRouter.get("/usage/summary", requirePortalAuth, async (req, res, next) => 
       }),
     ]);
 
+    const recentEvents = await prisma.sponsorshipEvent.findMany({
+      where: {
+        dappId: app.id,
+        createdAt: { gte: from, lte: to },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+      select: {
+        id: true,
+        endpoint: true,
+        status: true,
+        errorCode: true,
+        gasBudget: true,
+        purchaseAmountMist: true,
+        recipient: true,
+        latencyMs: true,
+        createdAt: true,
+      },
+    });
+
     res.json({
       ok: true,
       summary: {
@@ -429,7 +449,8 @@ portalRouter.get("/usage/summary", requirePortalAuth, async (req, res, next) => 
         successRequests,
         failedRequests,
         totalGasBudget: gasAggregate._sum.gasBudget ?? 0,
-        byEndpoint: byEndpoint.map((item) => ({ endpoint: item.endpoint, requests: item._count._all })),
+        byEndpoint: byEndpoint.map((item: { endpoint: any; _count: { _all: any; }; }) => ({ endpoint: item.endpoint, requests: item._count._all })),
+        recentEvents,
       },
     });
   } catch (error) {
