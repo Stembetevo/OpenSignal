@@ -11,6 +11,7 @@ import { dappRateLimit } from "./rate-limit.js";
 import { SuiGasStationService } from "./sui.js";
 import { quoteRequestSchema, sponsorRequestSchema } from "./types.js";
 import { recordSponsorshipEvent } from "./usage-events.js";
+import keysRouter from "./api-keys.js";
 
 const app = express();
 const logger = pino({
@@ -130,6 +131,7 @@ app.post("/v1/sponsor/sign", requireApiKey, dappRateLimit, async (req, res, next
 });
 
 app.use("/v1/portal", portalRouter);
+app.use("/api/keys", keysRouter);
 
 app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   const apiError = toApiError(error);
